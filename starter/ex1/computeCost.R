@@ -15,8 +15,11 @@ computeCost  <- function(X, y, theta) {
   
   # vectorized version.
   # (exactly the same with multivariate version. )
+  mean((y - theta%*%x)**2) / 2
   
-  
+  #dif <- X %*% theta - y
+  #J <- (t(dif) %*% dif) / (2 * m)
+  #J
   # -------------------------------------------------------------------------
   
 }

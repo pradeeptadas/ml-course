@@ -1,0 +1,120 @@
+---
+title: "ex1-readme"
+author: "Pradeepta Das"
+date: "25 November 2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Linear Regression with One Variable
+
+This section covers the R implementation of single variable linear regression corresponding to the first part of ex1.
+
+Recall that the file ex1data1.txt contains two columns of data: the first column corresponds to the populations of cities and the second column contains the profit of food trucks in those cities. 
+
+### Load the data into a table
+
+The data.frame datatype is now the preferred datatype for most data analysis and machine learning tasks in R. In this script we will use data.frame instead of vectors and matrices. A data.frame consists of rows and columns where each column corresponds to a variable, and each row corresponds to an observation. 
+
+Run the code below to:
+
+* Read the profit data into a table using the readtable function
+* Add descriptive names to the table variables
+* Observe first few rows of data
+* Compute summary statistics on each variable
+
+```{r}
+data <- read.table('ex1data1.txt', sep=',')
+colnames(data) <- c('Population','Profit')
+print(head(data))
+print(summary(data))
+```
+
+Use the ?data.frame to view descriptions for working with data.frame variables displayed above.
+
+## Fit a linear model using the lm function
+There are many functions available in the Statistics and Machine Learning Toolbox for fitting a model to data. To fit a linear regression model to the data in our table, we'll use the lm function. As we will see, there is no need to add a column of ones to the data for a bias term, to create a separate cost function, or to implement gradient descent to converge on the model parameters as in ex1- these tasks are automatically taken care of by lm. The output of lm is a LinearModel variable which contains all of the information about the model. 
+
+Run the code in this section to fit the linear model. The model coefficients ($\theta$) are extracted from the model variable and printed out for you below- compare to your results from ex1. After running, double-click on the variable linMdl in the Global Environment to examine its properties further. Variable properties can also be extracted and displayed using the '$' operator, as in the code below used to extract the Coefficients property. The result is a table of the model coefficients and additional statistical information.
+
+
+```{r}
+linMdl <- lm(Profit~Population, data=data);
+print(summary(linMdl))
+theta <- linMdl$coefficients
+cat('Theta computed by fitlm: [', theta[1], ', ', theta[2], ']')
+```
+
+### Making predictions using the LinearModel variable
+Below we use the predict function to predict profit for different populations using the model trained in the previous section. Note that the first input to predict is a trained model variable, while the second input is a feature value or list of values in the form of a vector, matrix or table. Run the code in this section and compare with your results from ex1.
+
+```{r}
+# Predict values for population sizes of 35,000 and 70,000
+predict1 <- predict(linMdl,data.frame("Population"=3.5));
+cat('For population = 35,000, we predict a profit of ', predict1*10000);
+
+predict2 = predict(linMdl, data.frame("Population"=7));
+cat('For population = 70,000, we predict a profit of ', predict2*10000);
+
+# Plot the linear fit
+linMdl.fitted <- fitted.values(linMdl)
+
+ggplot(data, aes(x=linMdl.fitted, y=Profit)) +
+    geom_point(shape=16) +
+    geom_smooth(method=lm)
+```
+
+## Linear Regression with Multiple Variables
+
+### Load and preview the data
+
+Recall that the file ex1data2.txt contains a training set of housing prices in Portland, Oregon. Each row corresponds to a house where the element in the first column is the size of the house (in square feet), the second column is the number of bedrooms, and the third column is the price of the house. Run this section to load the data into a table. After a table is displayed as output you can perform basic sort and filter operations on a given columns as follows:
+
+* Hover the mouse pointer over the desired variable name (column heading)
+* Click on the down arrow when it appears
+* Choose the desired sort option to sort all rows in the table based on the value in that variable OR
+* Enter a specific range in the boxes provided to select only rows whose value for the selected variable falls inside that range
+* The MATLAB code required to perform 3 and/or 4 is automatically displayed below the table. If desired, the code can be copied to the clipboard or added to the script using the 'Copy' and 'Update' code buttons.
+
+
+After running this section, experiment with sorting and filtering the data table below. (Since we want to use all the observations in data, there is no need to copy the code or add it to the script.)
+
+
+
+```{r}
+data <- read.table('ex1data2.txt', sep=',')
+colnames(data) <- c('Size', 'Bedrooms', 'Price')
+print(head(data))
+print(summary(data))
+```
+
+
+## Fit a linear model using fitlm and estimate housing prices
+The lm function can be used to fit a regression model with multiple variables as well. A different response variable can be specified, if desired- see the lm documentation for more information. Run this section to fit a linear model, display the model the coefficients, and predict the price of a 1650 sqft, 3-bedroom house. Compare with your results from ex1.
+
+```{r}
+linMdl <- lm(Price~Size+Bedrooms, data=data);
+print(summary(linMdl))
+theta <- linMdl$coefficients
+cat('Theta computed by fitlm: [', theta[1], ', ', theta[2], ']')
+
+price <- predict(linMdl, data.frame("Size" = 1650, "Bedrooms" = 3))
+cat('Predicted price of a 1650 sq-ft, 3 br house: $', price);
+```
+
+
+
+
+
+
+
+
+
+
+
+

@@ -19,8 +19,10 @@ gradientDescent <- function(X, y, theta, alpha, num_iters) {
     # Hint: While debugging, it can be useful to print out the values
     #       of the cost function (computeCost) and gradient here.
     #
-    
-    
+    deriv <- 
+    theta <- theta - alpha * deriv
+    theta_history[iter,] = t(theta)
+    J_history[iter] = computeCost(X, y, theta)
   }
   
   list(theta = theta, J_history = J_history, theta_history = theta_history)
